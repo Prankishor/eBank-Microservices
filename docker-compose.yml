@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  rabbit:
+    image: rabbitmq:3.13-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - prankishor
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  configserver:
+    image: "prankishor/configserver:v1"
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    networks:
+      - prankishor
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health | grep UP || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  accounts:
+    image: "prankishor/accounts:v1"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+    networks:
+      - prankishor
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILE_ACTIVE: "prod"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  loans:
+    image: "prankishor/loans:v1"
+    container_name: loans-ms
+    ports:
+      - "8090:8090"
+    networks:
+      - prankishor
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "loans"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILE_ACTIVE: "prod"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  cards:
+    image: "prankishor/cards:v1"
+    container_name: cards-ms
+    ports:
+      - "9000:9000"
+    networks:
+      - prankishor
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      SPRING_PROFILE_ACTIVE: "prod"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+networks:
+  prankishor:
+    driver: bridge

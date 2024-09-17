@@ -1,0 +1,11 @@
+build:
+  version: "2.0"
+
+accounts:
+  message: "Welcome to eBank accounts related QA APIs "
+  contactDetails:
+    name: "Kishore - QA Lead"
+    email: "kishore@gmail.com"
+  onCallSupport:
+    - (666) 265-3765
+    - (666) 734-8371

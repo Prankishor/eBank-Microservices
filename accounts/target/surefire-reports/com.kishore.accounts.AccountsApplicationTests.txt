@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.kishore.accounts.AccountsApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.62 s -- in com.kishore.accounts.AccountsApplicationTests

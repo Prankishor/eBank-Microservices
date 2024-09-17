@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.prankishor.loans.LoansApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.10 s -- in com.prankishor.loans.LoansApplicationTests
